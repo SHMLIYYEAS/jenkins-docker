@@ -21,7 +21,7 @@ pipeline {
         }
         stage('Push Docker Image') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-res', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
                         script {
                             // 登录到 Docker Hub
                             sh "echo ${DOCKER_HUB_PASSWORD} | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin"
