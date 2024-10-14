@@ -1,14 +1,11 @@
-# 使用官方 Node.js 作为父镜像
-FROM node:14
+# 使用官方 ubuntu 作为父镜像
+FROM ubuntu
 
 # 设置工作目录
 WORKDIR /var/jenkins_home
 
-# 复制 package.json 和 package-lock.jso
-COPY package*.json ./
-
 # 安装依赖项
-RUN npm install
+RUN apt install
 
 # 复制项目文件
 COPY . .
@@ -17,4 +14,4 @@ COPY . .
 EXPOSE 8080
 
 # 运行应用
-CMD [ "npm", "start" ]
+CMD [ "apt", "start" ]
