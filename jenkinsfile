@@ -11,6 +11,20 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    sh 'npm install'
+                }
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build("shmliyyeas/jenkins01:${env.BUILD_ID}", ".")
+                }
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 script {
