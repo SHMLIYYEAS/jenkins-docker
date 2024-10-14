@@ -2,7 +2,7 @@ pipeline {
     agent { node 'node01' }
     environment {
         // Docker 镜像名称
-        IMAGE_NAME = 'shmliyyeas/jenkins01'
+        IMAGE_NAME = 'jenkins01'
     }
     stages {
         stage('Checkout') {
