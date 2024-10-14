@@ -3,8 +3,6 @@ pipeline {
     environment {
         // Docker 镜像名称
         IMAGE_NAME = 'jenkins01'
-        // 基础镜像名称，这里以官方 Jenkins 镜像为例
-        BASE_IMAGE = 'jenkins/jenkins:latest'
     }
     stages {
         stage('Checkout') {
@@ -20,19 +18,10 @@ pipeline {
                 }
             }
         }
-        stage('Pull Base Image') {
-            steps {
-                script {
-                    // 拉取基础镜像
-                    sh "docker pull ${BASE_IMAGE}"
-                }
-            }
-        }
         stage('Build Docker Image') {
             steps {
                 script {
-                    // 构建新镜像，这里假设您的 Dockerfile 在当前目录，并且使用了拉取的基础镜像作为基础
-                    sh "docker build -t ${jenkins01}:${env.BUILD_ID} --build-arg BASE_IMAGE=${BASE_IMAGE} ."
+                    docker.build('jenkins01:${env.BUILD_ID}', '.')
                 }
             }
         }
@@ -40,12 +29,12 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-res', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
-                    script {
-                        // 登录到 Docker Hub
-                        sh 'echo ${DOCKER_HUB_PASSWORD} | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin'
-                        // 推送镜像
-                        sh "docker push ${IMAGE_NAME}:${env.BUILD_ID}"
-                    }
+                        script {
+                            // 登录到 Docker Hub
+                            sh 'echo ${DOCKER_HUB_PASSWORD} | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin'
+                            // 推送镜像
+                            sh 'docker push ${IMAGE_NAME}:${env.BUILD_ID}'
+                        }
                 }
             }
         }
