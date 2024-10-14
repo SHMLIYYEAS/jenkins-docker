@@ -21,18 +21,11 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("shmliyyeas/jenkins01:${env.BUILD_ID}", ".")
+                    docker.build("jenkins01:${env.BUILD_ID}", ".")
                 }
             }
         }
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    // 构建 Docker 镜像
-                    docker.build("${IMAGE_NAME}:${env.BUILD_ID}", ".")
-                }
-            }
-        }
+        
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-res', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
