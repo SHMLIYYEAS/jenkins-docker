@@ -8,7 +8,7 @@ WORKDIR /var/jenkins_home
 COPY package*.json ./
 
 # 安装依赖项
-RUN npm install
+RUN if [ -f package.json ]; then npm install; fi
 
 # 复制项目文件
 COPY . .
