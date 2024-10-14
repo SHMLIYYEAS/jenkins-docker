@@ -1,8 +1,11 @@
 pipeline {
-    agent { node 'node01' }
+    agent node01
     environment {
         // Docker 镜像名称
-        IMAGE_NAME = 'jenkins01'
+        IMAGE_NAME = 'shmliyyeas/jenkins01'
+        // Docker Hub 用户名和密码作为环境变量
+        DOCKER_HUB_USERNAME = credentials('docker-hub-username')
+        DOCKER_HUB_PASSWORD = credentials('docker-hub-password')
     }
     stages {
         stage('Checkout') {
@@ -15,24 +18,21 @@ pipeline {
             steps {
                 script {
                     // 构建 Docker 镜像
-                    docker.build("${jenkins01}:${env.BUILD_ID}", ".")
+                    docker.build("${IMAGE_NAME}:${env.BUILD_ID}", ".")
+                }
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // 登录到 Docker Hub
+                    sh "echo ${DOCKER_HUB_PASSWORD} | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin"
+                    // 推送镜像
+                    sh "docker push ${IMAGE_NAME}:${env.BUILD_ID}"
                 }
             }
         }
     }
-        stage('Push Docker Image') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-res', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
-                        script {
-                            // 登录到 Docker Hub
-                            sh "echo ${DOCKER_HUB_PASSWORD} | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin"
-                            // 推送镜像
-                            sh "docker push ${IMAGE_NAME}:${env.BUILD_ID}"
-                        }
-                }
-            }
-        }
-}
     post {
         success {
             // 构建成功后的操作
