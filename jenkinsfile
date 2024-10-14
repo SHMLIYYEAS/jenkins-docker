@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent node01
     environment {
         // Docker 镜像名称
         IMAGE_NAME = 'shmliyyeas/jenkins01'
