@@ -20,6 +20,19 @@ pipeline {
             }
         }
     }
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-res', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
+                        script {
+                            // 登录到 Docker Hub
+                            sh "echo ${DOCKER_HUB_PASSWORD} | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin"
+                            // 推送镜像
+                            sh "docker push ${IMAGE_NAME}:${env.BUILD_ID}"
+                        }
+                }
+            }
+        }
+}
     post {
         success {
             // 构建成功后的操作
