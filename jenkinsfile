@@ -21,7 +21,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("jenkins01:${env.BUILD_ID}", ".")
+                    docker.build('jenkins01:${env.BUILD_ID}', '.')
                 }
             }
         }
@@ -31,9 +31,9 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-res', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
                         script {
                             // 登录到 Docker Hub
-                            sh "echo ${DOCKER_HUB_PASSWORD} | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin"
+                            sh 'echo ${DOCKER_HUB_PASSWORD} | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin'
                             // 推送镜像
-                            sh "docker push ${IMAGE_NAME}:${env.BUILD_ID}"
+                            sh 'docker push ${IMAGE_NAME}:${env.BUILD_ID}'
                         }
                 }
             }
