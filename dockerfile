@@ -2,12 +2,10 @@
 FROM node:14
 
 # 设置工作目录
-WORKDIR /var/jenkins_home
-
-# 复制 package.json 和 package-lock.jso
-COPY package*.json ./
+WORKDIR /app
 
 # 安装依赖项
+COPY package*.json ./
 RUN npm install
 
 # 复制项目文件
