@@ -1,12 +1,11 @@
 pipeline {
-agent { node 'node01' }
-environment {
-// Docker 镜像名称
+    agent { node 'node01' }
+    environment {
+        // Docker 镜像名称
         IMAGE_NAME = 'shmliyyeas/jenkins01'
-        IMAGE_NAME = 'jenkins01'
-}
-stages {
-stage('Checkout') {
+    }
+    stages {
+        stage('Checkout') {
             steps {
                 // 检出源代码
                 checkout scm
@@ -23,12 +22,12 @@ stage('Checkout') {
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-res', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
-                        script {
-                            // 登录到 Docker Hub
-                            sh "echo ${DOCKER_HUB_PASSWORD} | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin"
-                            // 推送镜像
-                            sh "docker push ${IMAGE_NAME}:${env.BUILD_ID}"
-                        }
+                    script {
+                        // 登录到 Docker Hub
+                        sh "echo ${DOCKER_HUB_PASSWORD} | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin"
+                        // 推送镜像
+                        sh "docker push ${IMAGE_NAME}:${env.BUILD_ID}"
+                    }
                 }
             }
         }
